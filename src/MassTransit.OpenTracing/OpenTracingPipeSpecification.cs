@@ -4,11 +4,16 @@ using GreenPipes;
 
 namespace MassTransit.OpenTracing
 {
-    public class OpenTracingPipeSpecification : IPipeSpecification<ConsumeContext>, IPipeSpecification<PublishContext>
+    public class OpenTracingPipeSpecification : IPipeSpecification<ConsumeContext>, IPipeSpecification<PublishContext>, IPipeSpecification<ReceiveContext>
     {
         public IEnumerable<ValidationResult> Validate()
         {
             return Enumerable.Empty<ValidationResult>();
+        }
+
+        public void Apply(IPipeBuilder<ReceiveContext> builder)
+        {
+            builder.AddFilter(new OpenTracingReceiveFilter());
         }
 
         public void Apply(IPipeBuilder<ConsumeContext> builder)
